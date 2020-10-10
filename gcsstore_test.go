@@ -8,6 +8,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"testing"
+	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/creachadair/ffs/blob/storetest"
@@ -21,7 +22,7 @@ var (
 		"Bucket name to use or create for testing")
 )
 
-func TestBasic(t *testing.T) {
+func TestStoreManual(t *testing.T) {
 	if *credFile == "" {
 		t.Skip("Skipping test because -credentials are not set")
 	}
@@ -40,6 +41,7 @@ func TestBasic(t *testing.T) {
 	ctx := context.Background()
 	s, err := gcsstore.New(ctx, gcsstore.Options{
 		Bucket:  *bucketName,
+		Prefix:  "testdata",
 		Project: info.ProjectID,
 		BucketAttrs: &storage.BucketAttrs{
 			StorageClass: "STANDARD",
@@ -54,5 +56,7 @@ func TestBasic(t *testing.T) {
 	}
 	defer s.Close()
 
+	start := time.Now()
 	storetest.Run(t, s)
+	t.Logf("Store tests completed in %v", time.Since(start))
 }
