@@ -19,6 +19,13 @@ import (
 	"google.golang.org/api/option"
 )
 
+// Opener constructs a Store from an address comprising a GCS bucket name, for
+// use with the store package.
+func Opener(ctx context.Context, addr string) (blob.Store, error) {
+	// TODO: Plumb non-default credential settings.
+	return New(ctx, Options{Bucket: addr})
+}
+
 // A Store implements the blob.Store interface using a GCS bucket.
 type Store struct {
 	cli    *storage.Client
