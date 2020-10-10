@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"cloud.google.com/go/storage"
 	"github.com/creachadair/ffs/blob"
@@ -45,9 +46,17 @@ func New(ctx context.Context, opts Options) (*Store, error) {
 	if err != nil {
 		return nil, fmt.Errorf("creating client: %w", err)
 	}
+
+	// Verify that the requested bucket exists, and/or create it if the caller
+	// supplied a project in the options.
 	bucket := cli.Bucket(opts.Bucket)
 	if _, err := bucket.Attrs(ctx); err != nil {
-		return nil, fmt.Errorf("bucket %q: %w", opts.Bucket, err)
+		if err == storage.ErrBucketNotExist && opts.Project != "" {
+			err = bucket.Create(ctx, opts.Project, opts.BucketAttrs)
+		}
+		if err != nil {
+			return nil, fmt.Errorf("bucket %q: %w", opts.Bucket, err)
+		}
 	}
 	return &Store{cli: cli, bucket: bucket}, nil
 }
@@ -56,6 +65,12 @@ func New(ctx context.Context, opts Options) (*Store, error) {
 type Options struct {
 	// The name of the storage bucket to use (required).
 	Bucket string
+
+	// If set, the bucket will be created in this project if it does not exist.
+	Project string
+
+	// If set, options to pass when creating a bucket.
+	BucketAttrs *storage.BucketAttrs
 
 	// If not nil, return JSON credentials.
 	Credentials func(context.Context) ([]byte, error)
@@ -79,9 +94,13 @@ func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 
 // Put implements a method of the blob.Store interface.
 func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
-	w := s.bucket.Object(encodeKey(opts.Key)).If(storage.Conditions{
-		DoesNotExist: !opts.Replace,
-	}).NewWriter(ctx)
+	obj := s.bucket.Object(encodeKey(opts.Key))
+	if !opts.Replace {
+		obj = obj.If(storage.Conditions{
+			DoesNotExist: !opts.Replace,
+		})
+	}
+	w := obj.NewWriter(ctx)
 	if _, err := w.Write(opts.Data); err != nil {
 		w.Close()
 		return err
@@ -108,6 +127,8 @@ func (s *Store) Size(ctx context.Context, key string) (int64, error) {
 	attr, err := s.bucket.Object(encodeKey(key)).Attrs(ctx)
 	if err == storage.ErrObjectNotExist {
 		return 0, blob.ErrKeyNotFound
+	} else if err != nil {
+		return 0, err
 	}
 	return attr.Size, nil
 }
@@ -153,10 +174,17 @@ func (s *Store) Len(ctx context.Context) (int64, error) {
 // Close closes the client associated with s.
 func (s *Store) Close() error { return s.cli.Close() }
 
-func encodeKey(key string) string { return hex.EncodeToString([]byte(key)) }
+func encodeKey(key string) string {
+	return "#x" + hex.EncodeToString([]byte(key))
+}
+
+var errNotMyKey = errors.New("not a blob key")
 
 func decodeKey(ekey string) (string, error) {
-	key, err := hex.DecodeString(ekey)
+	if !strings.HasPrefix(ekey, "#x") {
+		return "", errNotMyKey
+	}
+	key, err := hex.DecodeString(ekey[2:]) // skip prefix
 	if err != nil {
 		return "", err
 	}
