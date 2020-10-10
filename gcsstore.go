@@ -23,19 +23,34 @@ import (
 // use with the store package.
 func Opener(ctx context.Context, addr string) (blob.Store, error) {
 	// TODO: Plumb non-default credential settings.
-	return New(ctx, Options{Bucket: addr})
+	bucket, prefix := addr, ""
+	if i := strings.Index(addr, "@"); i > 0 {
+		prefix, bucket = addr[:i], addr[i+1:]
+	}
+
+	return New(ctx, Options{
+		Bucket: bucket,
+		Prefix: prefix,
+	})
 }
 
 // A Store implements the blob.Store interface using a GCS bucket.
 type Store struct {
 	cli    *storage.Client
 	bucket *storage.BucketHandle
+	prefix string
 }
 
 // New creates a new storage client with the given options.
 func New(ctx context.Context, opts Options) (*Store, error) {
 	if opts.Bucket == "" {
 		return nil, errors.New("missing bucket name")
+	}
+	prefix := opts.Prefix
+	if prefix == "" {
+		prefix = "blob/"
+	} else if !strings.HasSuffix(prefix, "/") {
+		prefix += "/"
 	}
 
 	var copts []option.ClientOption
@@ -65,13 +80,17 @@ func New(ctx context.Context, opts Options) (*Store, error) {
 			return nil, fmt.Errorf("bucket %q: %w", opts.Bucket, err)
 		}
 	}
-	return &Store{cli: cli, bucket: bucket}, nil
+	return &Store{cli: cli, bucket: bucket, prefix: prefix}, nil
 }
 
 // Options control the construction of a *Store.
 type Options struct {
 	// The name of the storage bucket to use (required).
 	Bucket string
+
+	// The prefix to prepend to each key written by the store.
+	// If unset, it defaults to "blob/".
+	Prefix string
 
 	// If set, the bucket will be created in this project if it does not exist.
 	Project string
@@ -89,7 +108,7 @@ type Options struct {
 
 // Getimplements a method of the blob.Store interface.
 func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
-	r, err := s.bucket.Object(encodeKey(key)).NewReader(ctx)
+	r, err := s.bucket.Object(s.encodeKey(key)).NewReader(ctx)
 	if err == storage.ErrObjectNotExist {
 		return nil, blob.ErrKeyNotFound
 	} else if err != nil {
@@ -101,7 +120,7 @@ func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 
 // Put implements a method of the blob.Store interface.
 func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
-	obj := s.bucket.Object(encodeKey(opts.Key))
+	obj := s.bucket.Object(s.encodeKey(opts.Key))
 	if !opts.Replace {
 		obj = obj.If(storage.Conditions{
 			DoesNotExist: !opts.Replace,
@@ -122,7 +141,7 @@ func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
 
 // Delete implements a method of the blob.Store interface.
 func (s *Store) Delete(ctx context.Context, key string) error {
-	err := s.bucket.Object(encodeKey(key)).Delete(ctx)
+	err := s.bucket.Object(s.encodeKey(key)).Delete(ctx)
 	if err == storage.ErrObjectNotExist {
 		return blob.ErrKeyNotFound
 	}
@@ -131,7 +150,7 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 
 // Size implements a method of the blob.Store interface.
 func (s *Store) Size(ctx context.Context, key string) (int64, error) {
-	attr, err := s.bucket.Object(encodeKey(key)).Attrs(ctx)
+	attr, err := s.bucket.Object(s.encodeKey(key)).Attrs(ctx)
 	if err == storage.ErrObjectNotExist {
 		return 0, blob.ErrKeyNotFound
 	} else if err != nil {
@@ -143,7 +162,8 @@ func (s *Store) Size(ctx context.Context, key string) (int64, error) {
 // List implements a method of the blob.Store interface.
 func (s *Store) List(ctx context.Context, start string, f func(string) error) error {
 	iter := s.bucket.Objects(ctx, &storage.Query{
-		StartOffset: encodeKey(start),
+		Prefix:      s.prefix,
+		StartOffset: s.encodeKey(start),
 	})
 	for {
 		attr, err := iter.Next()
@@ -152,9 +172,11 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 		} else if err != nil {
 			return err
 		}
-		key, err := decodeKey(attr.Name)
-		if err != nil {
+		key, err := s.decodeKey(attr.Name)
+		if err == errNotMyKey {
 			continue // skip; the bucket may contain unrelated keys
+		} else if err != nil {
+			return fmt.Errorf("invalid key %q", attr.Name)
 		}
 		if err := f(key); err == blob.ErrStopListing {
 			break
@@ -181,17 +203,17 @@ func (s *Store) Len(ctx context.Context) (int64, error) {
 // Close closes the client associated with s.
 func (s *Store) Close() error { return s.cli.Close() }
 
-func encodeKey(key string) string {
-	return "#x" + hex.EncodeToString([]byte(key))
+func (s *Store) encodeKey(key string) string {
+	return s.prefix + hex.EncodeToString([]byte(key))
 }
 
 var errNotMyKey = errors.New("not a blob key")
 
-func decodeKey(ekey string) (string, error) {
-	if !strings.HasPrefix(ekey, "#x") {
+func (s *Store) decodeKey(ekey string) (string, error) {
+	if !strings.HasPrefix(ekey, s.prefix) {
 		return "", errNotMyKey
 	}
-	key, err := hex.DecodeString(ekey[2:]) // skip prefix
+	key, err := hex.DecodeString(strings.TrimPrefix(ekey, s.prefix))
 	if err != nil {
 		return "", err
 	}
