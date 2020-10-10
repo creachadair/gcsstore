@@ -5,12 +5,14 @@ package gcsstore_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"io/ioutil"
 	"testing"
 	"time"
 
 	"cloud.google.com/go/storage"
+	"github.com/creachadair/ffs/blob"
 	"github.com/creachadair/ffs/blob/storetest"
 	"github.com/creachadair/gcsstore"
 )
@@ -22,10 +24,12 @@ var (
 		"Bucket name to use or create for testing")
 )
 
-func TestStoreManual(t *testing.T) {
+func credentialsOrSkip(t *testing.T) (creds []byte, projectID string) {
+	t.Helper()
 	if *credFile == "" {
 		t.Skip("Skipping test because -credentials are not set")
 	}
+
 	data, err := ioutil.ReadFile(*credFile)
 	if err != nil {
 		t.Fatalf("Reading credentials: %v", err)
@@ -36,13 +40,19 @@ func TestStoreManual(t *testing.T) {
 	if err := json.Unmarshal(data, &info); err != nil {
 		t.Fatalf("Decoding credentials: %v", err)
 	}
+	return data, info.ProjectID
+}
 
-	t.Logf("Creating client for project %q, bucket %q", info.ProjectID, *bucketName)
+func storeOrSkip(t *testing.T, prefix string) *gcsstore.Store {
+	t.Helper()
+	data, projectID := credentialsOrSkip(t)
+
+	t.Logf("Creating client for project %q, bucket %q", projectID, *bucketName)
 	ctx := context.Background()
 	s, err := gcsstore.New(ctx, gcsstore.Options{
 		Bucket:  *bucketName,
-		Prefix:  "testdata",
-		Project: info.ProjectID,
+		Prefix:  prefix,
+		Project: projectID,
 		BucketAttrs: &storage.BucketAttrs{
 			StorageClass: "STANDARD",
 			Location:     "us-west1",
@@ -54,6 +64,27 @@ func TestStoreManual(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New failed: %v", err)
 	}
+	return s
+}
+
+func TestProbe(t *testing.T) {
+	s := storeOrSkip(t, "testprobe")
+	defer s.Close()
+
+	err := s.Put(context.Background(), blob.PutOptions{
+		Key:     "test probe key",
+		Data:    []byte("This is a blob to manually verify the store settings.\n"),
+		Replace: false,
+	})
+	if errors.Is(err, blob.ErrKeyExists) {
+		t.Logf("Put failed: %v", err)
+	} else if err != nil {
+		t.Errorf("Put failed: %v", err)
+	}
+}
+
+func TestStoreManual(t *testing.T) {
+	s := storeOrSkip(t, "testdata")
 	defer s.Close()
 
 	start := time.Now()
