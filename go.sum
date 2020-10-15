@@ -44,9 +44,9 @@ github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMn
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/creachadair/atomicfile v0.2.1/go.mod h1:Tvr/wsb3lQY4dj+9utcmJ7Gp6wi3LKA8jRNqoxUhA2M=
-github.com/creachadair/binpack v0.0.1/go.mod h1:zmlHeuQ87UnfV9tZuheYLABUqmtE71g5oiMtikDJTd8=
-github.com/creachadair/ffs v0.0.0-20201015022807-e2e481d341ed h1:R++Llbc0deSmXHpWZRBI7loxXvvv/rTh/PINaMKGk2U=
-github.com/creachadair/ffs v0.0.0-20201015022807-e2e481d341ed/go.mod h1:eXGKRFZnZqcZHbEIulKJsE0MvgIeiYNACxsidH9eh2I=
+github.com/creachadair/binpack v0.0.4/go.mod h1:zmlHeuQ87UnfV9tZuheYLABUqmtE71g5oiMtikDJTd8=
+github.com/creachadair/ffs v0.0.0-20201015161306-487a09628da6 h1:YzmSj2YZbA7Sv7+RxYYOctnYZiGCw+yVgPAYWRwZLiY=
+github.com/creachadair/ffs v0.0.0-20201015161306-487a09628da6/go.mod h1:r+80jvOukdLx4AwYj1wT2wEx3Hk1/lL9NPn3MGVUU54=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
