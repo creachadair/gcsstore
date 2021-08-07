@@ -21,6 +21,8 @@ import (
 
 // Opener constructs a Store from an address comprising a GCS bucket name, for
 // use with the store package.
+//
+// The format of addr is "[prefix@]bucket-name".
 func Opener(ctx context.Context, addr string) (blob.Store, error) {
 	// TODO: Plumb non-default credential settings.
 	bucket, prefix := addr, ""
