@@ -112,7 +112,7 @@ type Options struct {
 func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 	r, err := s.bucket.Object(s.encodeKey(key)).NewReader(ctx)
 	if err == storage.ErrObjectNotExist {
-		return nil, blob.ErrKeyNotFound
+		return nil, blob.KeyNotFound(key)
 	} else if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
 		return err
 	} else if err := w.Close(); err != nil {
 		if e, ok := err.(*googleapi.Error); ok && e.Code == http.StatusPreconditionFailed {
-			return blob.ErrKeyExists
+			return blob.KeyExists(opts.Key)
 		}
 		return err
 	}
@@ -145,7 +145,7 @@ func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
 func (s *Store) Delete(ctx context.Context, key string) error {
 	err := s.bucket.Object(s.encodeKey(key)).Delete(ctx)
 	if err == storage.ErrObjectNotExist {
-		return blob.ErrKeyNotFound
+		return blob.KeyNotFound(key)
 	}
 	return err
 }
@@ -154,7 +154,7 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 func (s *Store) Size(ctx context.Context, key string) (int64, error) {
 	attr, err := s.bucket.Object(s.encodeKey(key)).Attrs(ctx)
 	if err == storage.ErrObjectNotExist {
-		return 0, blob.ErrKeyNotFound
+		return 0, blob.KeyNotFound(key)
 	} else if err != nil {
 		return 0, err
 	}
