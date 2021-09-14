@@ -57,8 +57,8 @@ github.com/cncf/udpa/go v0.0.0-20200629203442-efcf912fb354/go.mod h1:WmhPx2Nbnht
 github.com/cncf/udpa/go v0.0.0-20201120205902-5459f2c99403/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=
 github.com/cncf/xds/go v0.0.0-20210312221358-fbca930ec8ed/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/creachadair/atomicfile v0.2.1/go.mod h1:Tvr/wsb3lQY4dj+9utcmJ7Gp6wi3LKA8jRNqoxUhA2M=
-github.com/creachadair/ffs v0.0.0-20210912232853-435760c497ea h1:JSautjXT25kEtZ+4Q7Tmzkn5URYmm0K86VChEiWrCcE=
-github.com/creachadair/ffs v0.0.0-20210912232853-435760c497ea/go.mod h1:CSnP5V18bT/O59GgdLDcoir8FpeLjW7i8l6tOh+UMAE=
+github.com/creachadair/ffs v0.0.0-20210914142155-62a96784b059 h1:CIUAgq8ruutms76RNK1eY92jRVolVv4MHkToF+MDSJw=
+github.com/creachadair/ffs v0.0.0-20210914142155-62a96784b059/go.mod h1:CSnP5V18bT/O59GgdLDcoir8FpeLjW7i8l6tOh+UMAE=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
