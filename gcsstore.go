@@ -30,10 +30,7 @@ func Opener(ctx context.Context, addr string) (blob.Store, error) {
 		prefix, bucket = addr[:i], addr[i+1:]
 	}
 
-	return New(ctx, Options{
-		Bucket: bucket,
-		Prefix: prefix,
-	})
+	return New(ctx, bucket, Options{Prefix: prefix})
 }
 
 // A Store implements the blob.Store interface using a GCS bucket.
@@ -43,9 +40,9 @@ type Store struct {
 	prefix string
 }
 
-// New creates a new storage client with the given options.
-func New(ctx context.Context, opts Options) (*Store, error) {
-	if opts.Bucket == "" {
+// New creates a new storage client for the given bucket.
+func New(ctx context.Context, bucketName string, opts Options) (*Store, error) {
+	if bucketName == "" {
 		return nil, errors.New("missing bucket name")
 	}
 	prefix := opts.Prefix
@@ -73,13 +70,13 @@ func New(ctx context.Context, opts Options) (*Store, error) {
 
 	// Verify that the requested bucket exists, and/or create it if the caller
 	// supplied a project in the options.
-	bucket := cli.Bucket(opts.Bucket)
+	bucket := cli.Bucket(bucketName)
 	if _, err := bucket.Attrs(ctx); err != nil {
 		if err == storage.ErrBucketNotExist && opts.Project != "" {
 			err = bucket.Create(ctx, opts.Project, opts.BucketAttrs)
 		}
 		if err != nil {
-			return nil, fmt.Errorf("bucket %q: %w", opts.Bucket, err)
+			return nil, fmt.Errorf("bucket %q: %w", bucketName, err)
 		}
 	}
 	return &Store{cli: cli, bucket: bucket, prefix: prefix}, nil
@@ -87,9 +84,6 @@ func New(ctx context.Context, opts Options) (*Store, error) {
 
 // Options control the construction of a *Store.
 type Options struct {
-	// The name of the storage bucket to use (required).
-	Bucket string
-
 	// The prefix to prepend to each key written by the store.
 	// If unset, it defaults to "blob/".
 	Prefix string

@@ -49,8 +49,7 @@ func storeOrSkip(t *testing.T, prefix string) *gcsstore.Store {
 
 	t.Logf("Creating client for project %q, bucket %q", projectID, *bucketName)
 	ctx := context.Background()
-	s, err := gcsstore.New(ctx, gcsstore.Options{
-		Bucket:  *bucketName,
+	s, err := gcsstore.New(ctx, *bucketName, gcsstore.Options{
 		Prefix:  prefix,
 		Project: projectID,
 		BucketAttrs: &storage.BucketAttrs{
