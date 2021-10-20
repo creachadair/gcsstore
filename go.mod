@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go v0.97.0 // indirect
 	cloud.google.com/go/storage v1.18.2
 	github.com/creachadair/ffs v0.0.0-20211019074145-b0be4f7cb5f7
+	github.com/creachadair/taskgroup v0.3.1
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.0.0-20211019232329-c6ed85c7a12d // indirect
 	google.golang.org/api v0.58.0

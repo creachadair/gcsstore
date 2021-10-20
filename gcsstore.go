@@ -14,6 +14,7 @@ import (
 
 	"cloud.google.com/go/storage"
 	"github.com/creachadair/ffs/blob"
+	"github.com/creachadair/taskgroup"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
@@ -185,15 +186,31 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 
 // Len implements a method of the blob.Store interface.
 func (s *Store) Len(ctx context.Context) (int64, error) {
-	// TODO: Is there a better way to get this information than iterating the
-	// whole bucket?
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	g := taskgroup.New(taskgroup.Trigger(cancel))
 
-	var n int64
-	err := s.List(ctx, "", func(string) error {
-		n++
-		return nil
-	})
-	return n, err
+	sizes := make([]int64, 256)
+	for i := 0; i < 256; i++ {
+		pfx, i := string([]byte{byte(i)}), i
+		g.Go(func() error {
+			return s.List(ctx, pfx, func(key string) error {
+				if !strings.HasPrefix(key, pfx) {
+					return blob.ErrStopListing
+				}
+				sizes[i]++
+				return nil
+			})
+		})
+	}
+	if err := g.Wait(); err != nil {
+		return 0, err
+	}
+	var total int64
+	for _, size := range sizes {
+		total += size
+	}
+	return total, nil
 }
 
 // Close closes the client associated with s.
