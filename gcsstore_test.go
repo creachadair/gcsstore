@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
-	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -30,7 +30,7 @@ func credentialsOrSkip(t *testing.T) (creds []byte, projectID string) {
 		t.Skip("Skipping test because -credentials are not set")
 	}
 
-	data, err := ioutil.ReadFile(*credFile)
+	data, err := os.ReadFile(*credFile)
 	if err != nil {
 		t.Fatalf("Reading credentials: %v", err)
 	}

@@ -8,7 +8,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
@@ -112,7 +112,7 @@ func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 		return nil, err
 	}
 	defer r.Close()
-	return ioutil.ReadAll(r)
+	return io.ReadAll(r)
 }
 
 // Put implements a method of the blob.Store interface.
