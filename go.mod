@@ -5,12 +5,12 @@ go 1.17
 require (
 	cloud.google.com/go v0.97.0 // indirect
 	cloud.google.com/go/storage v1.18.2
-	github.com/creachadair/ffs v0.0.0-20211107155509-121a5d80477f
+	github.com/creachadair/ffs v0.0.0-20211110184117-b17c093f80d9
 	github.com/creachadair/taskgroup v0.3.1
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	golang.org/x/net v0.0.0-20211109214657-ef0fda0de508 // indirect
+	golang.org/x/net v0.0.0-20211111160137-58aab5ef257a // indirect
 	google.golang.org/api v0.60.0
-	google.golang.org/genproto v0.0.0-20211104193956-4c6863e31247 // indirect
+	google.golang.org/genproto v0.0.0-20211111162719-482062a4217b // indirect
 )
 
 require (
@@ -25,7 +25,7 @@ require (
 	github.com/googleapis/gax-go/v2 v2.1.1 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
-	golang.org/x/sys v0.0.0-20211109184856-51b60fd695b3 // indirect
+	golang.org/x/sys v0.0.0-20211111213525-f221eed1c01e // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
