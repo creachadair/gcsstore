@@ -74,9 +74,9 @@ github.com/cncf/xds/go v0.0.0-20210312221358-fbca930ec8ed/go.mod h1:eXthEFrGJvWH
 github.com/cncf/xds/go v0.0.0-20210805033703-aa0b78936158/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/cncf/xds/go v0.0.0-20210922020428-25de7278fc84/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/cncf/xds/go v0.0.0-20211011173535-cb28da3451f1/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
-github.com/creachadair/atomicfile v0.2.2/go.mod h1:BRq8Une6ckFneYXZQ+kO7p1ZZP3I2fzVzf28JxrIkBc=
-github.com/creachadair/ffs v0.0.0-20220120005444-cd9ab97e8698 h1:Yg5OL5E7QLeEs55KVKRsMpIzaLVKWcWRC+Z4A9aVHhI=
-github.com/creachadair/ffs v0.0.0-20220120005444-cd9ab97e8698/go.mod h1:aAg0sUGj80JIV7ba8aHbVdz9/Tbfi3aLpcsLHxGTSLM=
+github.com/creachadair/atomicfile v0.2.4/go.mod h1:BRq8Une6ckFneYXZQ+kO7p1ZZP3I2fzVzf28JxrIkBc=
+github.com/creachadair/ffs v0.0.0-20220212145432-089856c9d756 h1:G65n46/x4vWAyFhUju/9ffuy/RI5QU8b0ZSpv2n7Pjc=
+github.com/creachadair/ffs v0.0.0-20220212145432-089856c9d756/go.mod h1:ZfRSxYFbv8/H/fvlTxx4pYnzwkEo/MIaViSl4bdEnJY=
 github.com/creachadair/taskgroup v0.3.1 h1:Mpi0sc005YWdsDEJsh8vGPOygp9b0rLR0OW6VBOp9Pc=
 github.com/creachadair/taskgroup v0.3.1/go.mod h1:q490pQxvbLXtIe4w8xlf5tcO6RR1AhRfWHXO0MotmHs=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -543,8 +543,8 @@ google.golang.org/genproto v0.0.0-20220111164026-67b88f271998/go.mod h1:5CzLGKJ6
 google.golang.org/genproto v0.0.0-20220114231437-d2e6a121cae0/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
 google.golang.org/genproto v0.0.0-20220201184016-50beb8ab5c44/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
 google.golang.org/genproto v0.0.0-20220204002441-d6cc3cc0770e/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
-google.golang.org/genproto v0.0.0-20220210181026-6fee9acbd336 h1:RK2ysGpQApbI6U7xn+ROT2rrm08lE/t8AcGqG8XI1CY=
-google.golang.org/genproto v0.0.0-20220210181026-6fee9acbd336/go.mod h1:kGP+zUP2Ddo0ayMi4YuN7C3WZyJvGLZRh8Z5wnAqvEI=
+google.golang.org/genproto v0.0.0-20220211171837-173942840c17 h1:2X+CNIheCutWRyKRte8szGxrE5ggtV4U+NKAbh/oLhg=
+google.golang.org/genproto v0.0.0-20220211171837-173942840c17/go.mod h1:kGP+zUP2Ddo0ayMi4YuN7C3WZyJvGLZRh8Z5wnAqvEI=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.20.1/go.mod h1:10oTOabMzJvdu6/UiuZezV6QK5dSlG84ov/aaiqXj38=
 google.golang.org/grpc v1.21.1/go.mod h1:oYelfM1adQP15Ek0mdvEgi9Df8B9CZIaU1084ijfRaM=
