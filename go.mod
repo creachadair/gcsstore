@@ -5,7 +5,7 @@ go 1.17
 require (
 	cloud.google.com/go v0.100.2 // indirect
 	cloud.google.com/go/storage v1.21.0
-	github.com/creachadair/ffs v0.0.0-20220221122908-85114e17bf06
+	github.com/creachadair/ffs v0.0.0-20220321145138-5d73b1896dcc
 	github.com/creachadair/taskgroup v0.3.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
