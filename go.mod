@@ -10,11 +10,11 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.0.0-20220412020605-290c469a71a5 // indirect
 	google.golang.org/api v0.74.0
-	google.golang.org/genproto v0.0.0-20220413183235-5e96e2839df9 // indirect
+	google.golang.org/genproto v0.0.0-20220414192740-2d67ff6cf2b4 // indirect
 )
 
 require (
-	cloud.google.com/go/compute v1.5.0 // indirect
+	cloud.google.com/go/compute v1.6.0 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
