@@ -79,8 +79,8 @@ github.com/cncf/xds/go v0.0.0-20210922020428-25de7278fc84/go.mod h1:eXthEFrGJvWH
 github.com/cncf/xds/go v0.0.0-20211001041855-01bcc9b48dfe/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/cncf/xds/go v0.0.0-20211011173535-cb28da3451f1/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/creachadair/atomicfile v0.2.5/go.mod h1:BRq8Une6ckFneYXZQ+kO7p1ZZP3I2fzVzf28JxrIkBc=
-github.com/creachadair/ffs v0.0.0-20220424073847-f257c18a6d5a h1:ouUQJOfu6uX/T4CotLQKGSfoaqIN22jwSfY2XECIzKk=
-github.com/creachadair/ffs v0.0.0-20220424073847-f257c18a6d5a/go.mod h1:WXuemzxJi6QBMNqzrg2dzCO4EhxZeFV203bf8CfYUUw=
+github.com/creachadair/ffs v0.0.0-20220426235939-589f835c0a18 h1:Dh63wjhwc4T2470ORELiCD3lKXgurs+vc5gDel55bbs=
+github.com/creachadair/ffs v0.0.0-20220426235939-589f835c0a18/go.mod h1:ottLToKvJuqMagZbm4zTcMOZEhlydZ3AHqPGrO+Uobk=
 github.com/creachadair/taskgroup v0.3.2 h1:zlfutDS+5XG40AOxcHDSThxKzns8Tnr9jnr6VqkYlkM=
 github.com/creachadair/taskgroup v0.3.2/go.mod h1:wieWwecHVzsidg2CsUnFinW1faVN4+kq+TDlRJQ0Wbk=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
