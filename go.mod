@@ -3,14 +3,14 @@ module github.com/creachadair/gcsstore
 go 1.18
 
 require (
-	cloud.google.com/go v0.101.0 // indirect
+	cloud.google.com/go v0.101.1 // indirect
 	cloud.google.com/go/storage v1.22.0
-	github.com/creachadair/ffs v0.0.0-20220503004911-c9d4af679599
+	github.com/creachadair/ffs v0.0.0-20220504173048-35625b420eff
 	github.com/creachadair/taskgroup v0.3.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	google.golang.org/api v0.78.0
-	google.golang.org/genproto v0.0.0-20220502173005-c8bf987b8c21 // indirect
+	google.golang.org/genproto v0.0.0-20220504150022-98cd25cafc72 // indirect
 )
 
 require (
