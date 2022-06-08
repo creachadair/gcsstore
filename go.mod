@@ -8,8 +8,8 @@ require (
 	github.com/creachadair/ffs v0.0.0-20220523163451-3b7ffac9e4c3
 	github.com/creachadair/taskgroup v0.3.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	golang.org/x/net v0.0.0-20220531201128-c960675eff93 // indirect
-	google.golang.org/api v0.82.0
+	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
+	google.golang.org/api v0.83.0
 	google.golang.org/genproto v0.0.0-20220602131408-e326c6e8e9c8 // indirect
 )
 
