@@ -8,9 +8,9 @@ require (
 	github.com/creachadair/ffs v0.0.0-20220729153156-7ad1a821a1c9
 	github.com/creachadair/taskgroup v0.3.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	golang.org/x/net v0.0.0-20220728211354-c7608f3a8462 // indirect
-	google.golang.org/api v0.90.0
-	google.golang.org/genproto v0.0.0-20220728213248-dd149ef739b9 // indirect
+	golang.org/x/net v0.0.0-20220802222814-0bcc04d9c69b // indirect
+	google.golang.org/api v0.91.0
+	google.golang.org/genproto v0.0.0-20220802133213-ce4fa296bf78 // indirect
 )
 
 require (
@@ -23,7 +23,7 @@ require (
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20220722155238-128564f6959c // indirect
-	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 // indirect
+	golang.org/x/sys v0.0.0-20220731174439-a90be440212d // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/appengine v1.6.7 // indirect
