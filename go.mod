@@ -9,7 +9,7 @@ require (
 	github.com/creachadair/taskgroup v0.3.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.0.0-20220921203646-d300de134e69 // indirect
-	google.golang.org/api v0.97.0
+	google.golang.org/api v0.98.0
 	google.golang.org/genproto v0.0.0-20220921223823-23cae91e6737 // indirect
 )
 
