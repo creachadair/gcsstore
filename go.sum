@@ -14,8 +14,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
-github.com/creachadair/ffs v0.0.0-20221211093811-34aef8098e36 h1:KHTf0qHKdoFBZz79sjiWM5X4hRNYN2ZHHADYV4WF9Zk=
-github.com/creachadair/ffs v0.0.0-20221211093811-34aef8098e36/go.mod h1:5BKEagl/PdY/mdlpoIlwOB+/hWgXkJ69sfgLVpvNZSs=
+github.com/creachadair/ffs v0.0.0-20221212045819-dff23ca2114e h1:6MSbmD8MM4GF18f+rMZiMg9XUdBzYBsc3RvLaVdBMC8=
+github.com/creachadair/ffs v0.0.0-20221212045819-dff23ca2114e/go.mod h1:5BKEagl/PdY/mdlpoIlwOB+/hWgXkJ69sfgLVpvNZSs=
 github.com/creachadair/taskgroup v0.3.2 h1:zlfutDS+5XG40AOxcHDSThxKzns8Tnr9jnr6VqkYlkM=
 github.com/creachadair/taskgroup v0.3.2/go.mod h1:wieWwecHVzsidg2CsUnFinW1faVN4+kq+TDlRJQ0Wbk=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
