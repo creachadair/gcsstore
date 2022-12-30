@@ -5,12 +5,12 @@ go 1.18
 require (
 	cloud.google.com/go v0.107.0 // indirect
 	cloud.google.com/go/storage v1.28.1
-	github.com/creachadair/ffs v0.0.0-20221226180407-922470a3cb4a
+	github.com/creachadair/ffs v0.0.0-20221230182434-26e606bfa99c
 	github.com/creachadair/taskgroup v0.3.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.4.0 // indirect
 	google.golang.org/api v0.105.0
-	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37 // indirect
+	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
 )
 
 require (
