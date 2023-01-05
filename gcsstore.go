@@ -103,7 +103,7 @@ type Options struct {
 	Unauthenticated bool
 }
 
-// Getimplements a method of the blob.Store interface.
+// Get implements a method of the blob.Store interface.
 func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 	r, err := s.bucket.Object(s.encodeKey(key)).NewReader(ctx)
 	if err == storage.ErrObjectNotExist {
