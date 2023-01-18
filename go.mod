@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go v0.108.0 // indirect
 	cloud.google.com/go/storage v1.28.1
 	github.com/creachadair/ffs v0.0.0-20230114064141-35883d7e7d11
-	github.com/creachadair/taskgroup v0.4.2
+	github.com/creachadair/taskgroup v0.5.0
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.5.0 // indirect
 	google.golang.org/api v0.107.0
@@ -32,3 +32,5 @@ require (
 	google.golang.org/grpc v1.52.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 )
+
+replace github.com/creachadair/taskgroup => ../taskgroup
