@@ -214,7 +214,7 @@ func (s *Store) Len(ctx context.Context) (int64, error) {
 }
 
 // Close closes the client associated with s.
-func (s *Store) Close() error { return s.cli.Close() }
+func (s *Store) Close(_ context.Context) error { return s.cli.Close() }
 
 func (s *Store) encodeKey(key string) string {
 	return s.prefix + hex.EncodeToString([]byte(key))

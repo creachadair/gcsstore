@@ -14,8 +14,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
-github.com/creachadair/ffs v0.0.0-20230118232329-ed1e02e6e9a9 h1:EyObE9oMXU2qpSpcfvTxlJuDo1rxorY60alkuWqyWO4=
-github.com/creachadair/ffs v0.0.0-20230118232329-ed1e02e6e9a9/go.mod h1:fFlaxHc23IXdYmMaeti2AAyYAfcJye41W0QmxOINAxA=
+github.com/creachadair/ffs v0.0.0-20230120030721-f875fe903469 h1:PyYaDP0CAhY+SPOz0ZPw/n4ckvpWbQmWtZ6PncMJ7CQ=
+github.com/creachadair/ffs v0.0.0-20230120030721-f875fe903469/go.mod h1:fFlaxHc23IXdYmMaeti2AAyYAfcJye41W0QmxOINAxA=
 github.com/creachadair/mds v0.0.0-20230115232940-050e69c560e9 h1:XLIAwplR1wDCSqyygIVKPaJmRAjPf1ntHwoIJus/bck=
 github.com/creachadair/mds v0.0.0-20230115232940-050e69c560e9/go.mod h1:caBACU+n1Q/rZ252FTzfnG0/H+ZUi+UnIQtEOraMv/g=
 github.com/creachadair/taskgroup v0.5.0 h1:44w3girt9OM0yPPoqGDO7u8+XEk6uG49PhnEn+8+nHY=

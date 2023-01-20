@@ -63,12 +63,14 @@ func storeOrSkip(t *testing.T, prefix string) *gcsstore.Store {
 	if err != nil {
 		t.Fatalf("New failed: %v", err)
 	}
+	t.Cleanup(func() {
+		s.Close(context.Background())
+	})
 	return s
 }
 
 func TestProbe(t *testing.T) {
 	s := storeOrSkip(t, "testprobe")
-	defer s.Close()
 
 	err := s.Put(context.Background(), blob.PutOptions{
 		Key:     "test probe key",
@@ -84,7 +86,6 @@ func TestProbe(t *testing.T) {
 
 func TestStoreManual(t *testing.T) {
 	s := storeOrSkip(t, "testdata")
-	defer s.Close()
 
 	start := time.Now()
 	storetest.Run(t, s)
