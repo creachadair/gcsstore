@@ -1,6 +1,6 @@
 module github.com/creachadair/gcsstore
 
-go 1.18
+go 1.19
 
 require (
 	cloud.google.com/go v0.109.0 // indirect
