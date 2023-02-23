@@ -145,17 +145,6 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 	return err
 }
 
-// Size implements a method of the blob.Store interface.
-func (s *Store) Size(ctx context.Context, key string) (int64, error) {
-	attr, err := s.bucket.Object(s.encodeKey(key)).Attrs(ctx)
-	if err == storage.ErrObjectNotExist {
-		return 0, blob.KeyNotFound(key)
-	} else if err != nil {
-		return 0, err
-	}
-	return attr.Size, nil
-}
-
 // List implements a method of the blob.Store interface.
 func (s *Store) List(ctx context.Context, start string, f func(string) error) error {
 	iter := s.bucket.Objects(ctx, &storage.Query{
