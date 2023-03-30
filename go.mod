@@ -5,19 +5,19 @@ go 1.19
 require (
 	cloud.google.com/go v0.110.0 // indirect
 	cloud.google.com/go/storage v1.30.1
-	github.com/creachadair/ffs v0.0.0-20230321183314-02aaf775b436
+	github.com/creachadair/ffs v0.0.0-20230327222140-2f4162e209d7
 	github.com/creachadair/taskgroup v0.5.1
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.8.0 // indirect
 	google.golang.org/api v0.114.0
-	google.golang.org/genproto v0.0.0-20230323212658-478b75c54725 // indirect
+	google.golang.org/genproto v0.0.0-20230330200707-38013875ee22 // indirect
 )
 
 require (
 	cloud.google.com/go/compute v1.19.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/iam v0.13.0 // indirect
-	github.com/creachadair/mds v0.0.0-20230321183227-bb0bfa375235 // indirect
+	github.com/creachadair/mds v0.0.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/uuid v1.3.0 // indirect

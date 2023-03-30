@@ -14,10 +14,10 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
-github.com/creachadair/ffs v0.0.0-20230321183314-02aaf775b436 h1:ewFI6PyOowvu+y8TGVZQ/8uqDW9hbekmoqwKXbhyBVM=
-github.com/creachadair/ffs v0.0.0-20230321183314-02aaf775b436/go.mod h1:cdWmofdqJYRWnvWnpO6c2ol7F7JymZNGSAWxSYYiang=
-github.com/creachadair/mds v0.0.0-20230321183227-bb0bfa375235 h1:GKdIqA2FqKxiAqY8cJTll3mJrkS2spxwEBoTp5ho7LY=
-github.com/creachadair/mds v0.0.0-20230321183227-bb0bfa375235/go.mod h1:caBACU+n1Q/rZ252FTzfnG0/H+ZUi+UnIQtEOraMv/g=
+github.com/creachadair/ffs v0.0.0-20230327222140-2f4162e209d7 h1:i9wW799Xmyy6dA0drVXAeQ5tKHS20A9iHPOh7V4Qq2E=
+github.com/creachadair/ffs v0.0.0-20230327222140-2f4162e209d7/go.mod h1:TLWnR1gP55o63MesjS0lMJaeP40X8H1zh58g76H3hOc=
+github.com/creachadair/mds v0.0.1 h1:2nX6Sww4dXpScx3b6aYjH1n7iuEH715+jj+cKkKw9BY=
+github.com/creachadair/mds v0.0.1/go.mod h1:caBACU+n1Q/rZ252FTzfnG0/H+ZUi+UnIQtEOraMv/g=
 github.com/creachadair/taskgroup v0.5.1 h1:O9UWnfoqX+K6jFwN5lYDN/h0prhc1zVhk8/SCmKmffc=
 github.com/creachadair/taskgroup v0.5.1/go.mod h1:e1kO+tKiCfDiDiwHei/dXgz3i9kQ8b5inEUVsrGmFfw=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -121,8 +121,8 @@ google.golang.org/appengine v1.6.7/go.mod h1:8WjMMxjGQR8xUklV/ARdw2HLXBOI7O7uCID
 google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8/go.mod h1:JiN7NxoALGmiZfu7CAH4rXhgtRTLTxftemlI0sWmxmc=
 google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55/go.mod h1:DMBHOl98Agz4BDEuKkezgsaosCRResVns1a3J2ZsMNc=
 google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013/go.mod h1:NbSheEEYHJ7i3ixzK3sjbqSGDJWnxyFXZblF3eUsNvo=
-google.golang.org/genproto v0.0.0-20230323212658-478b75c54725 h1:VmCWItVXcKboEMCwZaWge+1JLiTCQSngZeINF+wzO+g=
-google.golang.org/genproto v0.0.0-20230323212658-478b75c54725/go.mod h1:UUQDJDOlWu4KYeJZffbWgBkS1YFobzKbLVfK69pe0Ak=
+google.golang.org/genproto v0.0.0-20230330200707-38013875ee22 h1:n3ThVoQnHbCbnkhZZ1fx3+3fBAisViSwrpbtLV7vydY=
+google.golang.org/genproto v0.0.0-20230330200707-38013875ee22/go.mod h1:UUQDJDOlWu4KYeJZffbWgBkS1YFobzKbLVfK69pe0Ak=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
 google.golang.org/grpc v1.25.1/go.mod h1:c3i+UQWmh7LiEpx4sFZnkU36qjEYZ0imhYfXVyQciAY=
