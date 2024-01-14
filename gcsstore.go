@@ -179,27 +179,26 @@ func (s *Store) Len(ctx context.Context) (int64, error) {
 	defer cancel()
 	g := taskgroup.New(taskgroup.Trigger(cancel))
 
-	sizes := make([]int64, 256)
+	var total int64
+	c := taskgroup.NewCollector(func(v int64) { total += v })
 	for i := 0; i < 256; i++ {
-		pfx, i := string([]byte{byte(i)}), i
-		g.Go(func() error {
-			return s.List(ctx, pfx, func(key string) error {
+		pfx := string([]byte{byte(i)})
+		g.Go(c.Task(func() (int64, error) {
+			var count int64
+			err := s.List(ctx, pfx, func(key string) error {
 				if !strings.HasPrefix(key, pfx) {
 					return blob.ErrStopListing
 				}
-				sizes[i]++
+				count++
 				return nil
 			})
-		})
+			return count, err
+		}))
 	}
-	if err := g.Wait(); err != nil {
-		return 0, err
-	}
-	var total int64
-	for _, size := range sizes {
-		total += size
-	}
-	return total, nil
+	err := g.Wait()
+	c.Wait()
+
+	return total, err
 }
 
 // Close closes the client associated with s.
