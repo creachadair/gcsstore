@@ -10,6 +10,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"path"
+	"strconv"
 	"strings"
 
 	"cloud.google.com/go/storage"
@@ -23,22 +26,36 @@ import (
 // Opener constructs a Store from an address comprising a GCS bucket name, for
 // use with the store package.
 //
-// The format of addr is "[prefix@]bucket-name".
+// The format of addr is "[prefix@]bucket-name[?query]".
+//
+// Query parameters:
+//
+//	shard_prefix  : shard prefix length (int)
 func Opener(ctx context.Context, addr string) (blob.Store, error) {
-	// TODO: Plumb non-default credential settings.
-	bucket, prefix := addr, ""
-	if i := strings.Index(addr, "@"); i > 0 {
-		prefix, bucket = addr[:i], addr[i+1:]
+	prefix, bucket, ok := strings.Cut(addr, "@")
+	if !ok {
+		prefix, bucket = bucket, prefix
 	}
-
-	return New(ctx, bucket, Options{Prefix: prefix})
+	opts := Options{Prefix: prefix}
+	if base, query, ok := strings.Cut(bucket, "?"); ok {
+		bucket = base
+		q, err := url.ParseQuery(query)
+		if err != nil {
+			return nil, fmt.Errorf("invalid query: %w", err)
+		}
+		if v, ok := getQueryInt(q, "shard_len"); ok {
+			opts.ShardPrefixLen = v
+		}
+	}
+	return New(ctx, bucket, opts)
 }
 
 // A Store implements the blob.Store interface using a GCS bucket.
 type Store struct {
-	cli    *storage.Client
-	bucket *storage.BucketHandle
-	prefix string
+	cli      *storage.Client
+	bucket   *storage.BucketHandle
+	prefix   string // either empty, or ends with "/"
+	shardLen int    // if zero or negative, do not shard
 }
 
 // New creates a new storage client for the given bucket.
@@ -47,9 +64,7 @@ func New(ctx context.Context, bucketName string, opts Options) (*Store, error) {
 		return nil, errors.New("missing bucket name")
 	}
 	prefix := opts.Prefix
-	if prefix == "" {
-		prefix = "blob/"
-	} else if !strings.HasSuffix(prefix, "/") {
+	if prefix != "" && !strings.HasSuffix(prefix, "/") {
 		prefix += "/"
 	}
 
@@ -80,14 +95,26 @@ func New(ctx context.Context, bucketName string, opts Options) (*Store, error) {
 			return nil, fmt.Errorf("bucket %q: %w", bucketName, err)
 		}
 	}
-	return &Store{cli: cli, bucket: bucket, prefix: prefix}, nil
+	return &Store{
+		cli:      cli,
+		bucket:   bucket,
+		prefix:   prefix,
+		shardLen: opts.ShardPrefixLen,
+	}, nil
 }
 
 // Options control the construction of a *Store.
 type Options struct {
 	// The prefix to prepend to each key written by the store.
-	// If unset, it defaults to "blob/".
+	// If unset, no prefix is prepended and keys are written at the top level.
+	// See also ShardPrefixLen.
 	Prefix string
+
+	// The length of the key shard prefix. If positive, the key is partitioned
+	// into a prefix of this length and a suffix comprising the rest of the key,
+	// separated by a "/". For example, if ShardPrefixLen is 3, then the key
+	// 01234567 will besplit to 012/34567.
+	ShardPrefixLen int
 
 	// If set, the bucket will be created in this project if it does not exist.
 	Project string
@@ -205,18 +232,45 @@ func (s *Store) Len(ctx context.Context) (int64, error) {
 func (s *Store) Close(_ context.Context) error { return s.cli.Close() }
 
 func (s *Store) encodeKey(key string) string {
-	return s.prefix + hex.EncodeToString([]byte(key))
+	if s.shardLen <= 0 {
+		return s.prefix + hex.EncodeToString([]byte(key))
+	}
+	tail := hex.EncodeToString([]byte(key))
+	for n := len(tail); n <= s.shardLen; n++ {
+		tail += "-" // ensure _ in prefix/xxx/_ is never empty and sorts first
+	}
+	return path.Join(s.prefix, tail[:s.shardLen], tail[s.shardLen:])
 }
 
 var errNotMyKey = errors.New("not a blob key")
 
 func (s *Store) decodeKey(ekey string) (string, error) {
-	if !strings.HasPrefix(ekey, s.prefix) {
+	// Filter out keys in the bucket that don't have our prefix.
+	ekey, ok := strings.CutPrefix(ekey, s.prefix)
+	if !ok {
 		return "", errNotMyKey
 	}
-	key, err := hex.DecodeString(strings.TrimPrefix(ekey, s.prefix))
-	if err != nil {
-		return "", err
+
+	// If we don't expect a shard prefix, the key is whole.
+	if s.shardLen <= 0 {
+		key, err := hex.DecodeString(ekey)
+		return string(key), err
 	}
-	return string(key), nil
+
+	// Make sure we have a shard prefix and a non-empty suffix.
+	pre, post, ok := strings.Cut(ekey, "/")
+	if !ok || len(pre) != s.shardLen || post == "" {
+		return "", errNotMyKey
+	}
+	key, err := hex.DecodeString(strings.TrimRight(pre+post, "-"))
+	return string(key), err
+}
+
+func getQueryInt(q url.Values, name string) (int, bool) {
+	if !q.Has(name) {
+		return 0, false
+	} else if v, err := strconv.Atoi(q.Get(name)); err == nil {
+		return v, true
+	}
+	return 0, false
 }

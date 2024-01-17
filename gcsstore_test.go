@@ -22,6 +22,10 @@ var (
 		"Path of JSON credentials file for manual testing")
 	bucketName = flag.String("bucket", "gcsstore-test-data",
 		"Bucket name to use or create for testing")
+	bucketRegion = flag.String("region", "us-west1",
+		"Region to use for the test bucket")
+	shardPrefixLen = flag.Int("shard-prefix-len", 0,
+		"Key shard prefix length (0 means none)")
 )
 
 func credentialsOrSkip(t *testing.T) (creds []byte, projectID string) {
@@ -50,11 +54,12 @@ func storeOrSkip(t *testing.T, prefix string) *gcsstore.Store {
 	t.Logf("Creating client for project %q, bucket %q", projectID, *bucketName)
 	ctx := context.Background()
 	s, err := gcsstore.New(ctx, *bucketName, gcsstore.Options{
-		Prefix:  prefix,
-		Project: projectID,
+		Prefix:         prefix,
+		ShardPrefixLen: *shardPrefixLen,
+		Project:        projectID,
 		BucketAttrs: &storage.BucketAttrs{
 			StorageClass: "STANDARD",
-			Location:     "us-west1",
+			Location:     *bucketRegion,
 		},
 		Credentials: func(context.Context) ([]byte, error) {
 			return data, nil
