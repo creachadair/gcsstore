@@ -15,8 +15,8 @@ github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDk
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/cncf/xds/go v0.0.0-20230607035331-e9ce68804cb4 h1:/inchEIKaYC1Akx+H+gqO04wryn5h75LSazbRlnya1k=
 github.com/cncf/xds/go v0.0.0-20230607035331-e9ce68804cb4/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
-github.com/creachadair/ffs v0.1.1 h1:sZXRw95NqcOMhdMFrSGkzE1RZNhf4xUgegxcrPu59As=
-github.com/creachadair/ffs v0.1.1/go.mod h1:1sBBNDHv4Zvqo51DeFx1o65GDYjaZPlhqD9zBD/86nI=
+github.com/creachadair/ffs v0.2.1 h1:MTcbrvG5Kr1qy/szjyEqnO4iKlb72S/RMIC7WwpPpCU=
+github.com/creachadair/ffs v0.2.1/go.mod h1:XBZ0a3snAi/SxFuedpqejSV8nEQeN3RqQVeGndkR5Zg=
 github.com/creachadair/mds v0.7.0 h1:7QoYqiPl18C0h7CLq9z9/qUH5Vr62V9677yJZHGLoQM=
 github.com/creachadair/mds v0.7.0/go.mod h1:4vrFYUzTXMJpMBU+OA292I6IUxKWCCfZkgXg+/kBZMo=
 github.com/creachadair/taskgroup v0.7.1 h1:PY4R9Ze58ApFod58YXA7j4RBCFsWP+XP5p3epGab8X0=

@@ -5,18 +5,17 @@ package gcsstore
 
 import (
 	"context"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-	"path"
 	"strconv"
 	"strings"
 
 	"cloud.google.com/go/storage"
 	"github.com/creachadair/ffs/blob"
+	"github.com/creachadair/ffs/storage/hexkey"
 	"github.com/creachadair/taskgroup"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iterator"
@@ -52,20 +51,15 @@ func Opener(ctx context.Context, addr string) (blob.Store, error) {
 
 // A Store implements the blob.Store interface using a GCS bucket.
 type Store struct {
-	cli      *storage.Client
-	bucket   *storage.BucketHandle
-	prefix   string // either empty, or ends with "/"
-	shardLen int    // if zero or negative, do not shard
+	cli    *storage.Client
+	bucket *storage.BucketHandle
+	key    hexkey.Config
 }
 
 // New creates a new storage client for the given bucket.
 func New(ctx context.Context, bucketName string, opts Options) (*Store, error) {
 	if bucketName == "" {
 		return nil, errors.New("missing bucket name")
-	}
-	prefix := opts.Prefix
-	if prefix != "" && !strings.HasSuffix(prefix, "/") {
-		prefix += "/"
 	}
 
 	var copts []option.ClientOption
@@ -96,10 +90,9 @@ func New(ctx context.Context, bucketName string, opts Options) (*Store, error) {
 		}
 	}
 	return &Store{
-		cli:      cli,
-		bucket:   bucket,
-		prefix:   prefix,
-		shardLen: opts.ShardPrefixLen,
+		cli:    cli,
+		bucket: bucket,
+		key:    hexkey.Config{Prefix: opts.Prefix, Shard: opts.ShardPrefixLen},
 	}, nil
 }
 
@@ -132,7 +125,7 @@ type Options struct {
 
 // Get implements a method of the blob.Store interface.
 func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
-	r, err := s.bucket.Object(s.encodeKey(key)).NewReader(ctx)
+	r, err := s.bucket.Object(s.key.Encode(key)).NewReader(ctx)
 	if err == storage.ErrObjectNotExist {
 		return nil, blob.KeyNotFound(key)
 	} else if err != nil {
@@ -144,7 +137,7 @@ func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 
 // Put implements a method of the blob.Store interface.
 func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
-	obj := s.bucket.Object(s.encodeKey(opts.Key))
+	obj := s.bucket.Object(s.key.Encode(opts.Key))
 	if !opts.Replace {
 		obj = obj.If(storage.Conditions{
 			DoesNotExist: !opts.Replace,
@@ -165,7 +158,7 @@ func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
 
 // Delete implements a method of the blob.Store interface.
 func (s *Store) Delete(ctx context.Context, key string) error {
-	err := s.bucket.Object(s.encodeKey(key)).Delete(ctx)
+	err := s.bucket.Object(s.key.Encode(key)).Delete(ctx)
 	if err == storage.ErrObjectNotExist {
 		return blob.KeyNotFound(key)
 	}
@@ -174,9 +167,13 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 
 // List implements a method of the blob.Store interface.
 func (s *Store) List(ctx context.Context, start string, f func(string) error) error {
+	prefix := s.key.Prefix
+	if prefix != "" {
+		prefix += "/"
+	}
 	iter := s.bucket.Objects(ctx, &storage.Query{
-		Prefix:      s.prefix,
-		StartOffset: s.encodeKey(start),
+		Prefix:      prefix,
+		StartOffset: s.key.Encode(start),
 	})
 	for {
 		attr, err := iter.Next()
@@ -185,8 +182,8 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 		} else if err != nil {
 			return err
 		}
-		key, err := s.decodeKey(attr.Name)
-		if err == errNotMyKey {
+		key, err := s.key.Decode(attr.Name)
+		if errors.Is(err, hexkey.ErrNotMyKey) {
 			continue // skip; the bucket may contain unrelated keys
 		} else if err != nil {
 			return fmt.Errorf("invalid key %q", attr.Name)
@@ -230,41 +227,6 @@ func (s *Store) Len(ctx context.Context) (int64, error) {
 
 // Close closes the client associated with s.
 func (s *Store) Close(_ context.Context) error { return s.cli.Close() }
-
-func (s *Store) encodeKey(key string) string {
-	if s.shardLen <= 0 {
-		return s.prefix + hex.EncodeToString([]byte(key))
-	}
-	tail := hex.EncodeToString([]byte(key))
-	for n := len(tail); n <= s.shardLen; n++ {
-		tail += "-" // ensure _ in prefix/xxx/_ is never empty and sorts first
-	}
-	return path.Join(s.prefix, tail[:s.shardLen], tail[s.shardLen:])
-}
-
-var errNotMyKey = errors.New("not a blob key")
-
-func (s *Store) decodeKey(ekey string) (string, error) {
-	// Filter out keys in the bucket that don't have our prefix.
-	ekey, ok := strings.CutPrefix(ekey, s.prefix)
-	if !ok {
-		return "", errNotMyKey
-	}
-
-	// If we don't expect a shard prefix, the key is whole.
-	if s.shardLen <= 0 {
-		key, err := hex.DecodeString(ekey)
-		return string(key), err
-	}
-
-	// Make sure we have a shard prefix and a non-empty suffix.
-	pre, post, ok := strings.Cut(ekey, "/")
-	if !ok || len(pre) != s.shardLen || post == "" {
-		return "", errNotMyKey
-	}
-	key, err := hex.DecodeString(strings.TrimRight(pre+post, "-"))
-	return string(key), err
-}
 
 func getQueryInt(q url.Values, name string) (int, bool) {
 	if !q.Has(name) {
