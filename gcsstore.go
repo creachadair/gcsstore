@@ -171,11 +171,13 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 	if prefix != "" {
 		prefix += "/"
 	}
-	iter := s.bucket.Objects(ctx, &storage.Query{
+	q := &storage.Query{
 		Prefix:      prefix,
 		StartOffset: s.key.Encode(start),
 		Projection:  storage.ProjectionNoACL,
-	})
+	}
+	q.SetAttrSelection([]string{"Name"})
+	iter := s.bucket.Objects(ctx, q)
 	for {
 		attr, err := iter.Next()
 		if err == iterator.Done {
