@@ -174,6 +174,7 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 	iter := s.bucket.Objects(ctx, &storage.Query{
 		Prefix:      prefix,
 		StartOffset: s.key.Encode(start),
+		Projection:  storage.ProjectionNoACL,
 	})
 	for {
 		attr, err := iter.Next()
