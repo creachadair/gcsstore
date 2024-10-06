@@ -204,13 +204,13 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 func (s *Store) Len(ctx context.Context) (int64, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-	g := taskgroup.New(taskgroup.Trigger(cancel))
+	g := taskgroup.New(cancel)
 
 	var total int64
-	c := taskgroup.Collect(func(v int64) { total += v })
+	c := taskgroup.Gather(g.Go, func(v int64) { total += v })
 	for i := 0; i < 256; i++ {
 		pfx := string([]byte{byte(i)})
-		g.Go(c.Call(func() (int64, error) {
+		c.Call(func() (int64, error) {
 			var count int64
 			err := s.List(ctx, pfx, func(key string) error {
 				if !strings.HasPrefix(key, pfx) {
@@ -220,7 +220,7 @@ func (s *Store) Len(ctx context.Context) (int64, error) {
 				return nil
 			})
 			return count, err
-		}))
+		})
 	}
 	err := g.Wait()
 	return total, err
