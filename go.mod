@@ -6,12 +6,12 @@ toolchain go1.23.1
 
 require (
 	cloud.google.com/go v0.116.0 // indirect
-	cloud.google.com/go/storage v1.46.0
+	cloud.google.com/go/storage v1.47.0
 	github.com/creachadair/ffs v0.6.6
 	github.com/creachadair/taskgroup v0.13.1
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	golang.org/x/net v0.31.0 // indirect
-	google.golang.org/api v0.205.0
+	google.golang.org/api v0.206.0
 	google.golang.org/genproto v0.0.0-20241113202542-65e8d215514f // indirect
 )
 
@@ -59,5 +59,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241113202542-65e8d215514f // indirect
 	google.golang.org/grpc v1.68.0 // indirect
 	google.golang.org/grpc/stats/opentelemetry v0.0.0-20241028142157-ada6787961b3 // indirect
-	google.golang.org/protobuf v1.35.1 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 )
