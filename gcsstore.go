@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Michael J. Fromberger. All Rights Reserved.
 
-// Package gcsstore implements the blob.Store interface using a GCS bucket.
+// Package gcsstore implements the [blob.KV] interface using a GCS bucket.
 package gcsstore
 
 import (
@@ -22,7 +22,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-// Opener constructs a Store from an address comprising a GCS bucket name, for
+// Opener constructs a [KV] from an address comprising a GCS bucket name, for
 // use with the store package.
 //
 // The format of addr is "[prefix@]bucket-name[?query]".
@@ -30,7 +30,7 @@ import (
 // Query parameters:
 //
 //	shard_prefix  : shard prefix length (int)
-func Opener(ctx context.Context, addr string) (blob.Store, error) {
+func Opener(ctx context.Context, addr string) (blob.KV, error) {
 	prefix, bucket, ok := strings.Cut(addr, "@")
 	if !ok {
 		prefix, bucket = bucket, prefix
@@ -49,15 +49,15 @@ func Opener(ctx context.Context, addr string) (blob.Store, error) {
 	return New(ctx, bucket, opts)
 }
 
-// A Store implements the blob.Store interface using a GCS bucket.
-type Store struct {
+// A KV implements the [blob.KV] interface using a GCS bucket.
+type KV struct {
 	cli    *storage.Client
 	bucket *storage.BucketHandle
 	key    hexkey.Config
 }
 
 // New creates a new storage client for the given bucket.
-func New(ctx context.Context, bucketName string, opts Options) (*Store, error) {
+func New(ctx context.Context, bucketName string, opts Options) (*KV, error) {
 	if bucketName == "" {
 		return nil, errors.New("missing bucket name")
 	}
@@ -89,14 +89,14 @@ func New(ctx context.Context, bucketName string, opts Options) (*Store, error) {
 			return nil, fmt.Errorf("bucket %q: %w", bucketName, err)
 		}
 	}
-	return &Store{
+	return &KV{
 		cli:    cli,
 		bucket: bucket,
 		key:    hexkey.Config{Prefix: opts.Prefix, Shard: opts.ShardPrefixLen},
 	}, nil
 }
 
-// Options control the construction of a *Store.
+// Options control the construction of a [KV].
 type Options struct {
 	// The prefix to prepend to each key written by the store.
 	// If unset, no prefix is prepended and keys are written at the top level.
@@ -123,8 +123,8 @@ type Options struct {
 	Unauthenticated bool
 }
 
-// Get implements a method of the blob.Store interface.
-func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
+// Get implements a method of the [blob.KV] interface.
+func (s *KV) Get(ctx context.Context, key string) ([]byte, error) {
 	r, err := s.bucket.Object(s.key.Encode(key)).NewReader(ctx)
 	if err == storage.ErrObjectNotExist {
 		return nil, blob.KeyNotFound(key)
@@ -135,8 +135,8 @@ func (s *Store) Get(ctx context.Context, key string) ([]byte, error) {
 	return io.ReadAll(r)
 }
 
-// Put implements a method of the blob.Store interface.
-func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
+// Put implements a method of the [blob.KV] interface.
+func (s *KV) Put(ctx context.Context, opts blob.PutOptions) error {
 	obj := s.bucket.Object(s.key.Encode(opts.Key))
 	if !opts.Replace {
 		obj = obj.If(storage.Conditions{
@@ -156,8 +156,8 @@ func (s *Store) Put(ctx context.Context, opts blob.PutOptions) error {
 	return nil
 }
 
-// Delete implements a method of the blob.Store interface.
-func (s *Store) Delete(ctx context.Context, key string) error {
+// Delete implements a method of the [blob.KV] interface.
+func (s *KV) Delete(ctx context.Context, key string) error {
 	err := s.bucket.Object(s.key.Encode(key)).Delete(ctx)
 	if err == storage.ErrObjectNotExist {
 		return blob.KeyNotFound(key)
@@ -165,8 +165,8 @@ func (s *Store) Delete(ctx context.Context, key string) error {
 	return err
 }
 
-// List implements a method of the blob.Store interface.
-func (s *Store) List(ctx context.Context, start string, f func(string) error) error {
+// List implements a method of the [blob.KV] interface.
+func (s *KV) List(ctx context.Context, start string, f func(string) error) error {
 	prefix := s.key.Prefix
 	if prefix != "" {
 		prefix += "/"
@@ -200,8 +200,8 @@ func (s *Store) List(ctx context.Context, start string, f func(string) error) er
 	return nil
 }
 
-// Len implements a method of the blob.Store interface.
-func (s *Store) Len(ctx context.Context) (int64, error) {
+// Len implements a method of the [blob.KV] interface.
+func (s *KV) Len(ctx context.Context) (int64, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	g := taskgroup.New(cancel)
@@ -227,7 +227,7 @@ func (s *Store) Len(ctx context.Context) (int64, error) {
 }
 
 // Close closes the client associated with s.
-func (s *Store) Close(_ context.Context) error { return s.cli.Close() }
+func (s *KV) Close(_ context.Context) error { return s.cli.Close() }
 
 func getQueryInt(q url.Values, name string) (int, bool) {
 	if !q.Has(name) {

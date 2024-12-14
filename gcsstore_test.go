@@ -47,7 +47,7 @@ func credentialsOrSkip(t *testing.T) (creds []byte, projectID string) {
 	return data, info.ProjectID
 }
 
-func storeOrSkip(t *testing.T, prefix string) *gcsstore.Store {
+func kvOrSkip(t *testing.T, prefix string) *gcsstore.KV {
 	t.Helper()
 	data, projectID := credentialsOrSkip(t)
 
@@ -75,7 +75,7 @@ func storeOrSkip(t *testing.T, prefix string) *gcsstore.Store {
 }
 
 func TestProbe(t *testing.T) {
-	s := storeOrSkip(t, "testprobe")
+	s := kvOrSkip(t, "testprobe")
 
 	err := s.Put(context.Background(), blob.PutOptions{
 		Key:     "test probe key",
@@ -89,10 +89,10 @@ func TestProbe(t *testing.T) {
 	}
 }
 
-func TestStoreManual(t *testing.T) {
-	s := storeOrSkip(t, "testdata")
+func TestKVManual(t *testing.T) {
+	s := kvOrSkip(t, "testdata")
 
 	start := time.Now()
 	storetest.Run(t, s)
-	t.Logf("Store tests completed in %v", time.Since(start))
+	t.Logf("KV tests completed in %v", time.Since(start))
 }
