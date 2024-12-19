@@ -47,7 +47,7 @@ func credentialsOrSkip(t *testing.T) (creds []byte, projectID string) {
 	return data, info.ProjectID
 }
 
-func kvOrSkip(t *testing.T, prefix string) *gcsstore.KV {
+func storeOrSkip(t *testing.T, prefix string) gcsstore.Store {
 	t.Helper()
 	data, projectID := credentialsOrSkip(t)
 
@@ -71,13 +71,15 @@ func kvOrSkip(t *testing.T, prefix string) *gcsstore.KV {
 	t.Cleanup(func() {
 		s.Close(context.Background())
 	})
-	return s
+	return s.(gcsstore.Store)
 }
 
 func TestProbe(t *testing.T) {
-	s := kvOrSkip(t, "testprobe")
+	s := storeOrSkip(t, "testprobe")
+	ctx := context.Background()
+	kv := storetest.SubKeyspace(t, ctx, s, "")
 
-	err := s.Put(context.Background(), blob.PutOptions{
+	err := kv.Put(ctx, blob.PutOptions{
 		Key:     "test probe key",
 		Data:    []byte("This is a blob to manually verify the store settings.\n"),
 		Replace: false,
@@ -89,10 +91,11 @@ func TestProbe(t *testing.T) {
 	}
 }
 
-func TestKVManual(t *testing.T) {
-	s := kvOrSkip(t, "testdata")
+func TestManual(t *testing.T) {
+	s := storeOrSkip(t, "testdata")
+	t.Logf("Running store tests on a real GCS bucket (%q)", *bucketName)
 
 	start := time.Now()
 	storetest.Run(t, s)
-	t.Logf("KV tests completed in %v", time.Since(start))
+	t.Logf("Live store tests completed in %v", time.Since(start))
 }
