@@ -14,11 +14,12 @@ import (
 	"path"
 	"strconv"
 	"strings"
-	"sync"
 
 	"cloud.google.com/go/storage"
 	"github.com/creachadair/ffs/blob"
+	"github.com/creachadair/ffs/storage/dbkey"
 	"github.com/creachadair/ffs/storage/hexkey"
+	"github.com/creachadair/ffs/storage/monitor"
 	"github.com/creachadair/taskgroup"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iterator"
@@ -53,58 +54,8 @@ func Opener(ctx context.Context, addr string) (blob.StoreCloser, error) {
 }
 
 type Store struct {
-	*dbMonitor
+	*monitor.M[dbState, KV]
 }
-
-type dbMonitor struct {
-	cli    *storage.Client
-	bucket *storage.BucketHandle
-	key    hexkey.Config
-
-	μ    sync.Mutex
-	subs map[string]*dbMonitor
-	kvs  map[string]KV
-}
-
-func (d *dbMonitor) Keyspace(ctx context.Context, name string) (blob.KV, error) {
-	d.μ.Lock()
-	defer d.μ.Unlock()
-
-	kv, ok := d.kvs[name]
-	if !ok {
-		kv = KV{
-			cli:    d.cli,
-			bucket: d.bucket,
-			key:    d.key.WithPrefix(path.Join(d.key.Prefix, "_"+hex.EncodeToString([]byte(name)))),
-		}
-		if name == "" {
-			kv.key = d.key
-		}
-		d.kvs[name] = kv
-	}
-	return kv, nil
-}
-
-func (d *dbMonitor) Sub(ctx context.Context, name string) (blob.Store, error) {
-	d.μ.Lock()
-	defer d.μ.Unlock()
-
-	sub, ok := d.subs[name]
-	if !ok {
-		sub = &dbMonitor{
-			cli:    d.cli,
-			bucket: d.bucket,
-			key:    d.key.WithPrefix(path.Join(d.key.Prefix, "_"+hex.EncodeToString([]byte(name)))),
-			subs:   make(map[string]*dbMonitor),
-			kvs:    make(map[string]KV),
-		}
-		d.subs[name] = sub
-	}
-	return sub, nil
-}
-
-// Close implements part of the [blob.StoreCloser] interface.
-func (s Store) Close(ctx context.Context) error { return s.cli.Close() }
 
 // New creates a new [Store] using the specified GCS bucket.
 func New(ctx context.Context, bucketName string, opts Options) (blob.StoreCloser, error) {
@@ -139,14 +90,35 @@ func New(ctx context.Context, bucketName string, opts Options) (blob.StoreCloser
 			return nil, fmt.Errorf("bucket %q: %w", bucketName, err)
 		}
 	}
-	return Store{dbMonitor: &dbMonitor{
-		cli:    cli,
-		bucket: bucket,
-		key:    hexkey.Config{Prefix: opts.Prefix, Shard: opts.ShardPrefixLen},
-		subs:   make(map[string]*dbMonitor),
-		kvs:    make(map[string]KV),
-	}}, nil
+	return Store{M: monitor.New(monitor.Config[dbState, KV]{
+		DB: dbState{
+			cli:    cli,
+			bucket: bucket,
+			key:    hexkey.Config{Prefix: opts.Prefix, Shard: opts.ShardPrefixLen},
+		},
+		NewKV: func(_ context.Context, db dbState, _ dbkey.Prefix, name string) (KV, error) {
+			return KV{cli: db.cli, bucket: db.bucket, key: addName(db.key, name)}, nil
+		},
+		NewSub: func(_ context.Context, db dbState, _ dbkey.Prefix, name string) (dbState, error) {
+			return db.addName(name), nil
+		},
+	})}, nil
 }
+
+type dbState struct {
+	cli    *storage.Client
+	bucket *storage.BucketHandle
+	key    hexkey.Config
+}
+
+func (d dbState) addName(name string) dbState { d.key = addName(d.key, name); return d }
+
+func addName(key hexkey.Config, name string) hexkey.Config {
+	return key.WithPrefix(path.Join(key.Prefix, "_"+hex.EncodeToString([]byte(name))))
+}
+
+// Close implements part of the [blob.StoreCloser] interface.
+func (s Store) Close(ctx context.Context) error { return s.DB.cli.Close() }
 
 // Options control the construction of a [KV].
 type Options struct {

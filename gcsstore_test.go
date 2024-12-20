@@ -77,7 +77,7 @@ func storeOrSkip(t *testing.T, prefix string) gcsstore.Store {
 func TestProbe(t *testing.T) {
 	s := storeOrSkip(t, "testprobe")
 	ctx := context.Background()
-	kv := storetest.SubKeyspace(t, ctx, s, "")
+	kv := storetest.SubKV(t, ctx, s, "")
 
 	err := kv.Put(ctx, blob.PutOptions{
 		Key:     "test probe key",
