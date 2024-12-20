@@ -32,7 +32,7 @@ import (
 //
 // Query parameters:
 //
-//	shard_prefix  : shard prefix length (int)
+//	shard_len  : shard prefix length (int)
 func Opener(ctx context.Context, addr string) (blob.StoreCloser, error) {
 	prefix, bucket, ok := strings.Cut(addr, "@")
 	if !ok {
