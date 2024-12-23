@@ -58,8 +58,9 @@ func storeOrSkip(t *testing.T, prefix string) gcsstore.Store {
 		ShardPrefixLen: *shardPrefixLen,
 		Project:        projectID,
 		BucketAttrs: &storage.BucketAttrs{
-			StorageClass: "STANDARD",
-			Location:     *bucketRegion,
+			StorageClass:     "STANDARD",
+			Location:         *bucketRegion,
+			SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
 		},
 		Credentials: func(context.Context) ([]byte, error) {
 			return data, nil
