@@ -209,17 +209,13 @@ func (s KV) Delete(ctx context.Context, key string) error {
 
 // List implements a method of the [blob.KV] interface.
 func (s KV) List(ctx context.Context, start string, f func(string) error) error {
-	base := s.key.Prefix
-	if base != "" {
-		base += "/"
-	}
-	if start != "" {
-		start = s.key.Encode(start)
-	}
 	q := &storage.Query{
-		Prefix:      base,
-		StartOffset: start,
+		Prefix:      s.key.Prefix,
+		StartOffset: s.key.Start(start),
 		Projection:  storage.ProjectionNoACL,
+	}
+	if q.Prefix != "" {
+		q.Prefix += "/"
 	}
 	q.SetAttrSelection([]string{"Name"})
 	iter := s.bucket.Objects(ctx, q)
