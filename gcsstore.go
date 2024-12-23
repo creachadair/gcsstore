@@ -213,23 +213,26 @@ func (s KV) List(ctx context.Context, start string, f func(string) error) error 
 	if base != "" {
 		base += "/"
 	}
+	if start != "" {
+		start = s.key.Encode(start)
+	}
 	q := &storage.Query{
 		Prefix:      base,
-		StartOffset: s.key.Encode(start),
+		StartOffset: start,
 		Projection:  storage.ProjectionNoACL,
 	}
 	q.SetAttrSelection([]string{"Name"})
 	iter := s.bucket.Objects(ctx, q)
 	for {
 		attr, err := iter.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		} else if err != nil {
 			return err
 		}
 		key, err := s.key.Decode(attr.Name)
 		if errors.Is(err, hexkey.ErrNotMyKey) {
-			continue // skip; the bucket may contain unrelated keys
+			continue // skip; there may be other substores below here
 		} else if err != nil {
 			return fmt.Errorf("invalid key %q", attr.Name)
 		}
