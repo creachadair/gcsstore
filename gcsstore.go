@@ -39,7 +39,18 @@ func Opener(ctx context.Context, addr string) (blob.StoreCloser, error) {
 	if !ok {
 		prefix, bucket = bucket, prefix
 	}
-	opts := Options{Prefix: prefix}
+	opts := Options{
+		Prefix: prefix,
+
+		// Buckets are created by default with 7-day soft delete retention
+		// period.  Originally Google said this was "free", but they later
+		// started charging for it (ofc.).  Disable this to avoid paying for
+		// seven days of retention on short-lived data; if you want versioned
+		// keys, enable that explicitly.
+		BucketAttrs: &storage.BucketAttrs{
+			SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+		},
+	}
 	if base, query, ok := strings.Cut(bucket, "?"); ok {
 		bucket = base
 		q, err := url.ParseQuery(query)
