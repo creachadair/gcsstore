@@ -177,6 +177,21 @@ func (s KV) Get(ctx context.Context, key string) ([]byte, error) {
 	return io.ReadAll(r)
 }
 
+// Stat implements a method of the [blob.KV] interface.
+func (s KV) Stat(ctx context.Context, keys ...string) (blob.StatMap, error) {
+	out := make(blob.StatMap)
+	for _, key := range keys {
+		attr, err := s.bucket.Object(s.key.Encode(key)).Attrs(ctx)
+		if errors.Is(err, storage.ErrObjectNotExist) {
+			continue
+		} else if err != nil {
+			return nil, err
+		}
+		out[key] = blob.Stat{Size: attr.Size}
+	}
+	return out, nil
+}
+
 // Put implements a method of the [blob.KV] interface.
 func (s KV) Put(ctx context.Context, opts blob.PutOptions) error {
 	obj := s.bucket.Object(s.key.Encode(opts.Key))
