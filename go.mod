@@ -5,14 +5,14 @@ go 1.23
 toolchain go1.23.1
 
 require (
-	cloud.google.com/go v0.117.0 // indirect
-	cloud.google.com/go/storage v1.48.0
-	github.com/creachadair/ffs v0.9.7-0.20250103173928-8c8f75f454c2
+	cloud.google.com/go v0.118.0 // indirect
+	cloud.google.com/go/storage v1.49.0
+	github.com/creachadair/ffs v0.10.0
 	github.com/creachadair/taskgroup v0.13.2
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	golang.org/x/net v0.33.0 // indirect
-	google.golang.org/api v0.213.0
-	google.golang.org/genproto v0.0.0-20241216192217-9240e9c98484 // indirect
+	google.golang.org/api v0.214.0
+	google.golang.org/genproto v0.0.0-20250102185135-69823020774d // indirect
 )
 
 require (
@@ -54,9 +54,9 @@ require (
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20241209162323-e6fa225c2576 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241209162323-e6fa225c2576 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241223144023-3abc09e42ca8 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241223144023-3abc09e42ca8 // indirect
 	google.golang.org/grpc v1.68.0 // indirect
 	google.golang.org/grpc/stats/opentelemetry v0.0.0-20241028142157-ada6787961b3 // indirect
-	google.golang.org/protobuf v1.36.0 // indirect
+	google.golang.org/protobuf v1.36.1 // indirect
 )
