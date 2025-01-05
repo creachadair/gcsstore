@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"iter"
 	"net/http"
 	"net/url"
 	"path"
@@ -223,37 +224,38 @@ func (s KV) Delete(ctx context.Context, key string) error {
 }
 
 // List implements a method of the [blob.KV] interface.
-func (s KV) List(ctx context.Context, start string, f func(string) error) error {
-	q := &storage.Query{
-		Prefix:      s.key.Prefix,
-		StartOffset: s.key.Start(start),
-		Projection:  storage.ProjectionNoACL,
-	}
-	if q.Prefix != "" {
-		q.Prefix += "/"
-	}
-	q.SetAttrSelection([]string{"Name"})
-	iter := s.bucket.Objects(ctx, q)
-	for {
-		attr, err := iter.Next()
-		if errors.Is(err, iterator.Done) {
-			break
-		} else if err != nil {
-			return err
+func (s KV) List(ctx context.Context, start string) iter.Seq2[string, error] {
+	return func(yield func(string, error) bool) {
+		q := &storage.Query{
+			Prefix:      s.key.Prefix,
+			StartOffset: s.key.Start(start),
+			Projection:  storage.ProjectionNoACL,
 		}
-		key, err := s.key.Decode(attr.Name)
-		if errors.Is(err, hexkey.ErrNotMyKey) {
-			continue // skip; there may be other substores below here
-		} else if err != nil {
-			return fmt.Errorf("invalid key %q", attr.Name)
+		if q.Prefix != "" {
+			q.Prefix += "/"
 		}
-		if err := f(key); errors.Is(err, blob.ErrStopListing) {
-			break
-		} else if err != nil {
-			return err
+		q.SetAttrSelection([]string{"Name"})
+		iter := s.bucket.Objects(ctx, q)
+		for {
+			attr, err := iter.Next()
+			if errors.Is(err, iterator.Done) {
+				break
+			} else if err != nil {
+				yield("", err)
+				return
+			}
+			key, err := s.key.Decode(attr.Name)
+			if errors.Is(err, hexkey.ErrNotMyKey) {
+				continue // skip; there may be other substores below here
+			} else if err != nil {
+				yield("", fmt.Errorf("invalid key %q", attr.Name))
+				return
+			}
+			if !yield(key, nil) {
+				return
+			}
 		}
 	}
-	return nil
 }
 
 // Len implements a method of the [blob.KV] interface.
@@ -268,14 +270,15 @@ func (s KV) Len(ctx context.Context) (int64, error) {
 		pfx := string(byte(i))
 		c.Call(func() (int64, error) {
 			var count int64
-			err := s.List(ctx, pfx, func(key string) error {
-				if !strings.HasPrefix(key, pfx) {
-					return blob.ErrStopListing
+			for key, err := range s.List(ctx, pfx) {
+				if err != nil {
+					return 0, err
+				} else if !strings.HasPrefix(key, pfx) {
+					break
 				}
 				count++
-				return nil
-			})
-			return count, err
+			}
+			return count, nil
 		})
 	}
 	err := g.Wait()
