@@ -6,11 +6,11 @@ toolchain go1.23.1
 
 require (
 	cloud.google.com/go v0.118.0 // indirect
-	cloud.google.com/go/storage v1.49.0
-	github.com/creachadair/ffs v0.12.0
+	cloud.google.com/go/storage v1.50.0
+	github.com/creachadair/ffs v0.12.4
 	github.com/creachadair/taskgroup v0.13.2
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
-	golang.org/x/net v0.33.0 // indirect
+	golang.org/x/net v0.34.0 // indirect
 	google.golang.org/api v0.214.0
 	google.golang.org/genproto v0.0.0-20250102185135-69823020774d // indirect
 )
@@ -28,7 +28,7 @@ require (
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cncf/xds/go v0.0.0-20240905190251-b4127c9b8d78 // indirect
-	github.com/creachadair/mds v0.22.0 // indirect
+	github.com/creachadair/mds v0.23.0 // indirect
 	github.com/envoyproxy/go-control-plane v0.13.1 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -48,10 +48,10 @@ require (
 	go.opentelemetry.io/otel/sdk v1.32.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.32.0 // indirect
 	go.opentelemetry.io/otel/trace v1.32.0 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20241223144023-3abc09e42ca8 // indirect
