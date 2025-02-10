@@ -58,10 +58,3 @@ require (
 	google.golang.org/grpc v1.70.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
 )
-
-// Once again, Google has managed to hold its own langauge in the worst and
-// most user-hostile possible way. This exclusion appears to let us update the
-// cloud storage SDK without pulling in broken OTEL nonsense. For today.
-//
-// See https://github.com/googleapis/google-cloud-go/issues/11283
-exclude google.golang.org/grpc/stats/opentelemetry v0.0.0-20241028142157-ada6787961b3
