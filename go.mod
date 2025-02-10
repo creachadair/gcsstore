@@ -7,7 +7,7 @@ toolchain go1.23.1
 require (
 	cloud.google.com/go v0.118.2 // indirect
 	cloud.google.com/go/storage v1.50.0
-	github.com/creachadair/ffs v0.13.1
+	github.com/creachadair/ffs v0.13.4
 	github.com/creachadair/taskgroup v0.13.2
 	golang.org/x/net v0.34.0 // indirect
 	google.golang.org/api v0.220.0
