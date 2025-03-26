@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io"
 	"iter"
-	"net/http"
 	"net/url"
 	"path"
 	"strconv"
@@ -22,9 +21,10 @@ import (
 	"github.com/creachadair/ffs/storage/hexkey"
 	"github.com/creachadair/ffs/storage/monitor"
 	"github.com/creachadair/taskgroup"
-	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // Opener constructs a [Store] from an address comprising a GCS bucket name,
@@ -75,7 +75,7 @@ func New(ctx context.Context, bucketName string, opts Options) (blob.StoreCloser
 		return nil, errors.New("missing bucket name")
 	}
 
-	var copts []option.ClientOption
+	copts := []option.ClientOption{storage.WithDisabledClientMetrics()}
 	if opts.Credentials != nil {
 		bits, err := opts.Credentials(ctx)
 		if err != nil {
@@ -86,7 +86,7 @@ func New(ctx context.Context, bucketName string, opts Options) (blob.StoreCloser
 		copts = append(copts, option.WithoutAuthentication())
 	}
 
-	cli, err := storage.NewClient(ctx, copts...)
+	cli, err := storage.NewGRPCClient(ctx, copts...)
 	if err != nil {
 		return nil, fmt.Errorf("creating client: %w", err)
 	}
@@ -205,11 +205,12 @@ func (s KV) Put(ctx context.Context, opts blob.PutOptions) error {
 	if _, err := w.Write(opts.Data); err != nil {
 		w.Close()
 		return err
-	} else if err := w.Close(); err != nil {
-		if e, ok := err.(*googleapi.Error); ok && e.Code == http.StatusPreconditionFailed {
+	}
+	if cerr := w.Close(); cerr != nil {
+		if st := status.Convert(cerr); st != nil && st.Code() == codes.FailedPrecondition {
 			return blob.KeyExists(opts.Key)
 		}
-		return err
+		return cerr
 	}
 	return nil
 }
