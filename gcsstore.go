@@ -61,6 +61,9 @@ func Opener(ctx context.Context, addr string) (blob.StoreCloser, error) {
 		if v, ok := getQueryInt(q, "shard_len"); ok {
 			opts.ShardPrefixLen = v
 		}
+		if v, ok := getQueryInt(q, "pool_size"); ok {
+			opts.PoolSize = v
+		}
 	}
 	return New(ctx, bucket, opts)
 }
@@ -76,6 +79,9 @@ func New(ctx context.Context, bucketName string, opts Options) (blob.StoreCloser
 	}
 
 	copts := []option.ClientOption{storage.WithDisabledClientMetrics()}
+	if opts.PoolSize > 1 {
+		copts = append(copts, option.WithGRPCConnectionPool(opts.PoolSize))
+	}
 	if opts.Credentials != nil {
 		bits, err := opts.Credentials(ctx)
 		if err != nil {
@@ -157,6 +163,9 @@ type Options struct {
 	// If true and credentials are not provided, connect without authentication.
 	// If false, default application credentials will be used from the environment.
 	Unauthenticated bool
+
+	// If positive, use this value as the connection pool size.
+	PoolSize int
 }
 
 // A KV implements the [blob.KV] interface using a GCS bucket.
