@@ -202,6 +202,7 @@ func (s KV) Put(ctx context.Context, opts blob.PutOptions) error {
 		})
 	}
 	w := obj.NewWriter(ctx)
+	w.ForceEmptyContentType = true
 	if _, err := w.Write(opts.Data); err != nil {
 		w.Close()
 		return err
