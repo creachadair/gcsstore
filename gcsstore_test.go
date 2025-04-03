@@ -80,8 +80,9 @@ func TestProbe(t *testing.T) {
 	ctx := context.Background()
 	kv := storetest.SubKV(t, ctx, s, "")
 
+	const testKey = "test probe key"
 	err := kv.Put(ctx, blob.PutOptions{
-		Key:     "test probe key",
+		Key:     testKey,
 		Data:    []byte("This is a blob to manually verify the store settings.\n"),
 		Replace: false,
 	})
@@ -89,6 +90,9 @@ func TestProbe(t *testing.T) {
 		t.Logf("Put failed: %v", err)
 	} else if err != nil {
 		t.Errorf("Put failed: %v", err)
+	}
+	if err := kv.Delete(ctx, testKey); err != nil {
+		t.Errorf("Delete probe key: %v", err)
 	}
 }
 
