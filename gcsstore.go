@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"net/http"
 	"net/url"
 	"path"
 	"strconv"
@@ -21,10 +22,9 @@ import (
 	"github.com/creachadair/ffs/storage/hexkey"
 	"github.com/creachadair/ffs/storage/monitor"
 	"github.com/creachadair/taskgroup"
+	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // Opener constructs a [Store] from an address comprising a GCS bucket name,
@@ -61,9 +61,6 @@ func Opener(ctx context.Context, addr string) (blob.StoreCloser, error) {
 		if v, ok := getQueryInt(q, "shard_len"); ok {
 			opts.ShardPrefixLen = v
 		}
-		if v, ok := getQueryInt(q, "pool_size"); ok {
-			opts.PoolSize = v
-		}
 	}
 	return New(ctx, bucket, opts)
 }
@@ -78,10 +75,7 @@ func New(ctx context.Context, bucketName string, opts Options) (blob.StoreCloser
 		return nil, errors.New("missing bucket name")
 	}
 
-	copts := []option.ClientOption{storage.WithDisabledClientMetrics()}
-	if opts.PoolSize > 1 {
-		copts = append(copts, option.WithGRPCConnectionPool(opts.PoolSize))
-	}
+	copts := []option.ClientOption{storage.WithJSONReads()}
 	if opts.Credentials != nil {
 		bits, err := opts.Credentials(ctx)
 		if err != nil {
@@ -92,7 +86,7 @@ func New(ctx context.Context, bucketName string, opts Options) (blob.StoreCloser
 		copts = append(copts, option.WithoutAuthentication())
 	}
 
-	cli, err := storage.NewGRPCClient(ctx, copts...)
+	cli, err := storage.NewClient(ctx, copts...)
 	if err != nil {
 		return nil, fmt.Errorf("creating client: %w", err)
 	}
@@ -163,9 +157,6 @@ type Options struct {
 	// If true and credentials are not provided, connect without authentication.
 	// If false, default application credentials will be used from the environment.
 	Unauthenticated bool
-
-	// If positive, use this value as the connection pool size.
-	PoolSize int
 }
 
 // A KV implements the [blob.KV] interface using a GCS bucket.
@@ -216,7 +207,8 @@ func (s KV) Put(ctx context.Context, opts blob.PutOptions) error {
 		return err
 	}
 	if cerr := w.Close(); cerr != nil {
-		if st := status.Convert(cerr); st != nil && st.Code() == codes.FailedPrecondition {
+		var ge *googleapi.Error
+		if errors.As(cerr, &ge) && ge.Code == http.StatusPreconditionFailed {
 			return blob.KeyExists(opts.Key)
 		}
 		return cerr
