@@ -2,8 +2,6 @@ module github.com/creachadair/gcsstore
 
 go 1.24
 
-toolchain go1.24.1
-
 require (
 	cloud.google.com/go v0.120.1 // indirect
 	cloud.google.com/go/storage v1.51.0
