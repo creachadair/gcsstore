@@ -81,6 +81,7 @@ func New(ctx context.Context, bucketName string, opts Options) (blob.StoreCloser
 		if err != nil {
 			return nil, fmt.Errorf("fetching credentials: %w", err)
 		}
+		//lint:ignore SA1019 Find a better way to do this.
 		copts = append(copts, option.WithCredentialsJSON(bits))
 	} else if opts.Unauthenticated {
 		copts = append(copts, option.WithoutAuthentication())
