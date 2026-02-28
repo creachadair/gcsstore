@@ -1,21 +1,21 @@
 module github.com/creachadair/gcsstore
 
-go 1.25
+go 1.25.0
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
 	cloud.google.com/go/storage v1.60.0
-	github.com/creachadair/ffs v0.17.3
+	github.com/creachadair/ffs v0.17.4
 	github.com/creachadair/taskgroup v0.14.2
-	golang.org/x/net v0.50.0 // indirect
-	google.golang.org/api v0.266.0
-	google.golang.org/genproto v0.0.0-20260209200024-4cfbd4190f57 // indirect
-	google.golang.org/grpc v1.78.0 // indirect
+	golang.org/x/net v0.51.0 // indirect
+	google.golang.org/api v0.269.0
+	google.golang.org/genproto v0.0.0-20260226221140-a57be14db171 // indirect
+	google.golang.org/grpc v1.79.1 // indirect
 )
 
 require (
 	cel.dev/expr v0.25.1 // indirect
-	cloud.google.com/go/auth v0.18.1 // indirect
+	cloud.google.com/go/auth v0.18.2 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	cloud.google.com/go/iam v1.5.3 // indirect
@@ -25,9 +25,9 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.55.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cncf/xds/go v0.0.0-20260202195803-dba9d589def2 // indirect
-	github.com/creachadair/mds v0.25.15 // indirect
-	github.com/envoyproxy/go-control-plane/envoy v1.36.0 // indirect
-	github.com/envoyproxy/protoc-gen-validate v1.3.0 // indirect
+	github.com/creachadair/mds v0.26.0 // indirect
+	github.com/envoyproxy/go-control-plane/envoy v1.37.0 // indirect
+	github.com/envoyproxy/protoc-gen-validate v1.3.3 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.3 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
@@ -54,7 +54,7 @@ require (
 	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.34.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20260209200024-4cfbd4190f57 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260209200024-4cfbd4190f57 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20260226221140-a57be14db171 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260226221140-a57be14db171 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
