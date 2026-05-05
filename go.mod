@@ -5,10 +5,10 @@ go 1.25.0
 require (
 	cloud.google.com/go v0.123.0 // indirect
 	cloud.google.com/go/storage v1.62.1
-	github.com/creachadair/ffs v0.17.8
-	github.com/creachadair/taskgroup v0.14.2
+	github.com/creachadair/ffs v0.17.9
+	github.com/creachadair/taskgroup v0.14.3
 	golang.org/x/net v0.53.0 // indirect
-	google.golang.org/api v0.276.0
+	google.golang.org/api v0.277.0
 	google.golang.org/genproto v0.0.0-20260414002931-afd174a4e478 // indirect
 	google.golang.org/grpc v1.80.0 // indirect
 )
@@ -58,7 +58,7 @@ require (
 	golang.org/x/time v0.15.0 // indirect
 	golang.org/x/tools v0.43.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260414002931-afd174a4e478 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260414002931-afd174a4e478 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260427160629-7cedc36a6bc4 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	honnef.co/go/tools v0.7.0 // indirect
 )
