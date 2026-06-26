@@ -76,11 +76,10 @@ func storeOrSkip(t *testing.T, prefix string) gcsstore.Store {
 
 func TestProbe(t *testing.T) {
 	s := storeOrSkip(t, "testprobe")
-	ctx := context.Background()
-	kv := storetest.SubKV(t, ctx, s, "")
+	kv := storetest.SubKV(t, s, "")
 
 	const testKey = "test probe key"
-	err := kv.Put(ctx, blob.PutOptions{
+	err := kv.Put(t.Context(), blob.PutOptions{
 		Key:     testKey,
 		Data:    []byte("This is a blob to manually verify the store settings.\n"),
 		Replace: false,
@@ -90,7 +89,7 @@ func TestProbe(t *testing.T) {
 	} else if err != nil {
 		t.Errorf("Put failed: %v", err)
 	}
-	if err := kv.Delete(ctx, testKey); err != nil {
+	if err := kv.Delete(t.Context(), testKey); err != nil {
 		t.Errorf("Delete probe key: %v", err)
 	}
 }
