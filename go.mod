@@ -1,6 +1,6 @@
 module github.com/creachadair/gcsstore
 
-go 1.25.8
+go 1.26.0
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
@@ -60,7 +60,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20260630182238-925bb5da69e7 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260807164820-c8921c73eeea // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
-	honnef.co/go/tools v0.7.0 // indirect
+	honnef.co/go/tools v0.8.0 // indirect
 )
 
 tool honnef.co/go/tools/staticcheck
