@@ -220,7 +220,9 @@ func (s KV) Put(ctx context.Context, opts blob.PutOptions) error {
 
 // Delete implements a method of the [blob.KV] interface.
 func (s KV) Delete(ctx context.Context, key string) error {
-	err := s.bucket.Object(s.key.Encode(key)).Delete(ctx)
+	err := s.bucket.Object(s.key.Encode(key)).
+		Retryer(storage.WithPolicy(storage.RetryAlways)).
+		Delete(ctx)
 	if errors.Is(err, storage.ErrObjectNotExist) {
 		return blob.KeyNotFound(key)
 	}
