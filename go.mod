@@ -4,11 +4,11 @@ go 1.26.0
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
-	cloud.google.com/go/storage v1.66.0
-	github.com/creachadair/ffs v0.18.4
+	cloud.google.com/go/storage v1.67.1
+	github.com/creachadair/ffs v0.18.6
 	github.com/creachadair/taskgroup v0.14.4
 	golang.org/x/net v0.58.0 // indirect
-	google.golang.org/api v0.295.0
+	google.golang.org/api v0.298.0
 	google.golang.org/genproto v0.0.0-20260715232425-e75dac1f907d // indirect
 	google.golang.org/grpc v1.83.2 // indirect
 )
@@ -25,7 +25,7 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.57.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cncf/xds/go v0.0.0-20260202195803-dba9d589def2 // indirect
-	github.com/creachadair/mds v0.30.5 // indirect
+	github.com/creachadair/mds v0.31.0 // indirect
 	github.com/envoyproxy/go-control-plane/envoy v1.37.0 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.3.3 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
